@@ -1,6 +1,4 @@
-type Book
-  @model(subscriptions: null)
-  {
+type Book @model(subscriptions: null) {
   id: ID! @primaryKey
   title: String!
   description: String
@@ -11,19 +9,15 @@ type Book
   orders: [BookOrder] @hasMany(indexName: "byBook", fields: ["id"])
 }
 
-type BookOrder
-  @model(queries: null, subscriptions: null)
-  {
+type BookOrder @model(queries: null, subscriptions: null) {
   id: ID! @primaryKey
-  book_id: ID! @index(name: "byBook", sortKeyFields: ["order_id"]) # Define the byBook index
-  order_id: ID! @index(name: "byOrder", sortKeyFields: ["book_id"]) # Define the byOrder index
+  book_id: ID! @index(name: "byBook", sortKeyFields: ["order_id"])
+  order_id: ID! @index(name: "byOrder", sortKeyFields: ["book_id"])
   book: Book @belongsTo(fields: ["book_id"])
   order: Order @belongsTo(fields: ["order_id"])
 }
 
-type Order
-  @model(subscriptions: null)
-  {
+type Order @model(subscriptions: null) {
   id: ID! @primaryKey
   user: String! @index(name: "byUser", queryField: "ordersByUser")
   date: String
@@ -50,6 +44,29 @@ input ProcessOrderInput {
   total: Float!
   token: String!
   address: String
+}
+
+input CreateBookInput {
+  title: String!
+  description: String
+  image: String
+  author: String
+  featured: Boolean
+  price: Float
+}
+
+input UpdateBookInput {
+  id: ID!
+  title: String
+  description: String
+  image: String
+  author: String
+  featured: Boolean
+  price: Float
+}
+
+input DeleteBookInput {
+  id: ID!
 }
 
 type Mutation {
