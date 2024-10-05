@@ -1,0 +1,7 @@
+{
+  "AppSyncApiName": "mybookstore",
+  "AuthCognitoUserPoolId": "us-east-2_9lr3hAFLH",
+  "AuthCognitoUserPoolClientId": "1ghvairqikgv9qn3old7khs4ut",
+  "DynamoDBBillingMode": "PAY_PER_REQUEST",
+  "DynamoDBEnableServerSideEncryption": false
+}

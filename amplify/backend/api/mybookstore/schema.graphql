@@ -1,0 +1,64 @@
+type Book
+  @model(subscriptions: null)
+  {
+  id: ID! @primaryKey
+  title: String!
+  description: String
+  image: String
+  author: String
+  featured: Boolean
+  price: Float
+  orders: [BookOrder] @hasMany(indexName: "byBook", fields: ["id"])
+}
+
+type BookOrder
+  @model(queries: null, subscriptions: null)
+  {
+  id: ID! @primaryKey
+  book_id: ID! @index(name: "byBook", sortKeyFields: ["order_id"]) # Define the byBook index
+  order_id: ID! @index(name: "byOrder", sortKeyFields: ["book_id"]) # Define the byOrder index
+  book: Book @belongsTo(fields: ["book_id"])
+  order: Order @belongsTo(fields: ["order_id"])
+}
+
+type Order
+  @model(subscriptions: null)
+  {
+  id: ID! @primaryKey
+  user: String! @index(name: "byUser", queryField: "ordersByUser")
+  date: String
+  total: Float
+  books: [BookOrder] @hasMany(indexName: "byOrder", fields: ["id"])
+}
+
+enum OrderStatus {
+  SUCCESS
+  FAILED
+}
+
+input CartItem {
+  id: ID!
+  title: String
+  image: String
+  price: Float
+  amount: Int
+}
+
+input ProcessOrderInput {
+  id: ID!
+  cart: [CartItem]
+  total: Float!
+  token: String!
+  address: String
+}
+
+type Mutation {
+  processOrder(input: ProcessOrderInput!): OrderStatus
+    @function(name: "processPayment-${env}")
+    @function(name: "createOrder-${env}")
+
+  createBook(input: CreateBookInput!): Book
+  updateBook(input: UpdateBookInput!): Book
+  deleteBook(input: DeleteBookInput!): Book
+}
+
